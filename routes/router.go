@@ -1,24 +1,24 @@
 package routes
 
 import (
-	"fmt"
-	"net/http"
 	"webserver-and-html/config"
-	// "sesi-enam/controller"
+	"webserver-and-html/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
-func Router() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, world!")
-	})
+func Router() *gin.Engine {
+	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
 
-	// http.HandleFunc("/")
+	// Route for login page.
+	router.GET("/login", controller.LoginIndex)
+	router.POST("/login", controller.AuthenticateUser)
 
-	// http.HandleFunc("/greet", controller.HandlerGreet)
-	// http.HandleFunc("/api/employees", controller.GetEmployee)
-	// http.HandleFunc("/api/employee", controller.CreateEmployee)
-	// http.HandleFunc("/indexEmployee", controller.GetEmployeeUI)
+	return router
+}
 
-	fmt.Println("Server is running on port", config.Port) // Console log
-	http.ListenAndServe(config.Port, nil)                 // Actually run serve (in php)
+func RunServer() {
+	router := Router()
+	router.Run(config.Port)
 }
